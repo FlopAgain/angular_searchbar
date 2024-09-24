@@ -1,0 +1,6 @@
+<h2>Liste des produits</h2>
+<section>
+  @for (product of products(); track product) {
+      <app-product [product]="product"></app-product>
+  }
+</section>

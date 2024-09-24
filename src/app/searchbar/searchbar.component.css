@@ -1,0 +1,44 @@
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centre les éléments horizontalement */
+  justify-content: center; /* Centre les éléments verticalement */
+  gap: 10px; /* Espacement entre les éléments */
+  padding: 20px;
+}
+
+label {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.2em;
+  color: #2c3e50; /* Couleur du texte sobre */
+  margin-bottom: 10px;
+}
+
+input[type="text"] {
+  width: 300px; /* Largeur de la barre de recherche */
+  padding: 10px;
+  font-size: 1em;
+  border: 2px solid #3498db; /* Bordure bleu clair */
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+  border-color: #2980b9; /* Changement de bordure au focus */
+}
+
+input[type="submit"] {
+  background-color: #3498db; /* Bouton bleu */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+  background-color: #2980b9; /* Couleur plus foncée au survol */
+}

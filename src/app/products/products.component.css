@@ -1,0 +1,17 @@
+section {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px; /* Espacement entre les éléments */
+  padding: 20px; /* Espacement interne autour de la section */
+  background-color: #f4f6f9; /* Fond doux et propre */
+
+}
+
+h2 {
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.5em;
+  color: #34495e; /* Couleur subtile */
+  margin-bottom: 30px;
+}

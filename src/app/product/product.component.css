@@ -1,0 +1,30 @@
+article {
+  background-color: white; /* Fond blanc pour un look propre */
+  border-radius: 10px; /* Coins arrondis pour correspondre au style précédent */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Ombre subtile pour ajouter de la profondeur */
+  padding: 15px; /* Espacement interne */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animation fluide lors de l'interaction */
+  text-align: center;
+}
+
+article:hover {
+  transform: translateY(-3px); /* Léger mouvement au survol */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Ombre plus prononcée au survol */
+}
+
+article h3 {
+  font-family: 'Roboto', sans-serif; /* Police élégante et lisible */
+  font-size: 1.3em;
+  color: #2c3e50; /* Couleur neutre */
+  margin-bottom: 10px;
+  text-align: center; /* Centrer le texte du nom de produit */
+}
+
+article h3:hover {
+  color: #3498db; /* Changement de couleur du texte au survol pour un effet interactif */
+}
+
+img {
+  object-fit: cover;
+  width: 80%;
+}
