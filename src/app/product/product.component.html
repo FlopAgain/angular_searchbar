@@ -1,6 +1,9 @@
 <article>
   <img src="https://placeholder.co/800x600" alt="example">
   <h3>
-    {{product().name}}
+    {{product().name}} === {{date}}
+
   </h3>
+  <p-calendar [(ngModel)]="date" inline="true" [disabledDates]="disabledDates" [disabledDays]="[0]" [locale]="fr" >
+  </p-calendar>
 </article>
