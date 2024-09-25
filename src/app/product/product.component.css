@@ -5,10 +5,26 @@ article {
   padding: 15px; /* Espacement interne */
   transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animation fluide lors de l'interaction */
   text-align: center;
+
+}
+.container {
+  justify-content: space-between; /* Espacement entre les éléments */
+  width: 100%; /* Prend toute la largeur disponible */
+  gap: 3px; /* Espacement entre le calendrier et le dataview */
+}
+.mb10{
+  margin-bottom: 10px;
+}
+p-calendar {
+  flex: 1; /* Le calendrier occupe 50% de la largeur */
+  max-width: 48%; /* Limite la largeur à 48% pour garder un espace entre les deux */
 }
 
+p-dataView {
+  flex: 1; /* Le dataview occupe 50% de la largeur */
+  max-width: 48%; /* Limite la largeur à 48% */
+}
 article:hover {
-  transform: translateY(-3px); /* Léger mouvement au survol */
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Ombre plus prononcée au survol */
 }
 
@@ -26,5 +42,81 @@ article h3:hover {
 
 img {
   object-fit: cover;
-  width: 80%;
+  width: 50%;
+}
+.dataView-item {
+  width: 80%; /* Prend 80% de la largeur */
+  max-height: 50px; /* Hauteur maximale de 50px */
+  margin: 0 auto; /* Centre les éléments horizontalement */
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd; /* Bordure pour délimiter chaque créneau */
+  border-radius: 5px; /* Ajoute un léger arrondi aux coins */
+  background-color: #f9f9f9; /* Couleur de fond */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Légère ombre pour l'effet de relief */
+  padding: 5px; /* Espacement interne */
+}
+
+.timeSlot-image {
+  width: 40px; /* Redimensionne l'image */
+  height: 40px;
+  object-fit: cover; /* Ajuste l'image pour qu'elle rentre bien dans le cadre */
+}
+
+.timeSlot-info h4 {
+  font-size: 14px; /* Réduction de la taille de police */
+  margin: 0; /* Pas de marge supplémentaire autour du titre */
+  float: left;
+}
+
+.timeSlot-info p {
+  font-size: 12px; /* Taille de police plus petite pour le texte */
+  margin: 0; /* Pas de marge */
+}
+.ml3{
+  margin-left: 13px;
+}
+.badge {
+  background-color: #28a745; /* Couleur verte pour "Disponible" */
+  color: white;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-size: 12px;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+.unavailable {
+  background-color: #3498db;
+}
+.timeSlot-price {
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.button-container p-button {
+  height: 30px; /* Redimensionnement du bouton */
+}
+
+.p-grid {
+  gap: 10px; /* Espacement entre les colonnes */
+}
+
+.p-col-2, .p-col-6, .p-col-4 {
+  flex: none;
+}
+
+.p-col-2 {
+  flex-basis: 10%; /* Ajustement de la largeur de l'image */
+}
+
+.p-col-6 {
+  flex-basis: 60%; /* Ajustement de la section d'information */
+}
+
+.p-col-4 {
+  flex-basis: 30%; /* Ajustement de la largeur de la section du bouton */
+  display: flex;
+  justify-content: flex-end; /* Alignement à droite */
+  align-items: center; /* Centrage vertical */
 }

@@ -1,9 +1,53 @@
 <article>
-  <img src="https://placeholder.co/800x600" alt="example">
+  <img src="https://placeholder.co/200x150" alt="example">
   <h3>
-    {{product().name}} === {{date}}
+    {{product().name}} == {{date}}
 
   </h3>
-  <p-calendar [(ngModel)]="date" inline="true" [disabledDates]="disabledDates" [disabledDays]="[0]" [locale]="fr" >
-  </p-calendar>
+  <div class="container">
+    <div class=mb10>
+      <p-calendar
+        [(ngModel)]="date"
+        [showIcon]="true"
+        [disabledDates]="disabledDates"
+        [disabledDays]="[0]"
+        [locale]="fr"
+        (onSelect)="daySelected()" />
+    </div>
+    <p-dataView [value]="timeSlots" layout="list">
+      <ng-template let-timeSlot pTemplate="listItem">
+        <div *ngFor="let time of timeSlot" class="mb10">
+          <div class="p-grid p-align-center p-p-3 dataView-item">
+            <!-- Image représentant l'horaire -->
+            <div class="p-col-2">
+              <img src="https://via.placeholder.com/100x100" alt="Horaires" class="timeSlot-image" />
+            </div>
+
+            <!-- Informations sur le créneau horaire -->
+            <div class="p-col-6">
+              <div class="timeSlot-info">
+                <h4>{{ time.value }}</h4>
+                <p>Disponibilité:
+                  <span *ngIf="time.available" class="badge available">Disponible</span>
+                  <span *ngIf="!time.available" class="badge unavailable">Réservé</span>
+                  <span *ngIf="selectedSlot == time" class="badge unavailable">Ma réservation !</span>
+
+                </p>
+              </div>
+            </div>
+
+            <!-- Bouton de réservation -->
+            <div class="p-col-4 p-text-right">
+              <span class="timeSlot-price">$50</span>
+              <div class="button-container" >
+                <p-button label="Réserver" icon="pi pi-shopping-cart" (onClick)="reservTimeSlot(time)" class="p-button-primary"  [disabled]="!time.available || selectedSlot.value !== ''"></p-button>
+
+              </div>
+              <p-button class="ml3" [text]="true" [raised]="true"  *ngIf="selectedSlot == time" label="Annuler" (onClick)="cancelTimeSlot(time)"></p-button>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-dataView>
+  </div>
 </article>
