@@ -1,12 +1,9 @@
-import { Component, input, OnInit} from '@angular/core';
+import { Component, input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
 import { Product } from '../../models/product';
-
 import { PrimeNGConfig } from 'primeng/api';
 import { ReservationService } from '../registration.service'; // Import du service
-
 import { CalendarModule } from 'primeng/calendar';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
@@ -16,7 +13,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-product',
   standalone: true,
-  imports: [CommonModule,FormsModule, DataViewModule, ButtonModule, CalendarModule],
+  imports: [CommonModule, FormsModule, DataViewModule, ButtonModule, CalendarModule],
   templateUrl: './product.component.html',
   styleUrl: './product.component.css'
 })
@@ -27,38 +24,15 @@ export class ProductComponent implements OnInit {
 
   // Liste des créneaux horaires
   timeSlots: TimeSlot[] = [];
-  selectedSlot: TimeSlot = {value: "", available: true};
+  selectedSlot: TimeSlot = { value: new Date(), available: true, selected: false };
   disabledDates: Date[] = [
-    new Date(2024, 8, 15), // 15 Septembre 2024 (les mois commencent à 0 en JavaScript, donc 8 = Septembre)
+    new Date(2024, 8, 15), // 15 Septembre 2024
     new Date(2024, 8, 21), // 21 Septembre 2024
     new Date(2024, 9, 10), // 10 Octobre 2024
   ];
   reservedDates: Date[] = [];
-  subscription: Subscription = new Subscription;
-  ngOnInit() {
-    // Générer les créneaux horaires de 30 minutes de 08:00 à 18:00
-    this.generateTimeSlots();
+  subscription: Subscription = new Subscription();
 
-    this.subscription = this.reservationService.reservedDates$.subscribe(dates => {
-      this.reservedDates = dates;
-
-      // Parcourir tous les créneaux horaires
-      this.timeSlots.forEach(slot => {
-        // Pour chaque créneau, vérifier s'il existe dans reservedDates
-        const isReserved = this.reservedDates.some(reservedDate => {
-          const [hours, minutes] = slot.value.split(':').map(Number);
-          return reservedDate.getHours() === hours && reservedDate.getMinutes() === minutes;
-        });
-
-        // Si le créneau est réservé, marquer available à false
-        if (isReserved) {
-          slot.available = false;
-        } else {
-          slot.available = true;  // Optionnel : si tu veux remettre à true les créneaux qui ne sont plus réservés
-        }
-      });
-    });
-  }
   constructor(private primengConfig: PrimeNGConfig, private reservationService: ReservationService) {
     this.fr = {
       firstDayOfWeek: 1,
@@ -75,11 +49,26 @@ export class ProductComponent implements OnInit {
 
     this.primengConfig.setTranslation(this.fr);
   }
-  reservDay() {
-    this.disabledDates = [...this.disabledDates, this.date];
-  }
-  daySelected() {
 
+  ngOnInit() {
+    // Générer les créneaux horaires de 30 minutes de 08:00 à 18:00
+    this.generateTimeSlots();
+    this.subscription = this.reservationService.reservedDates$.subscribe(dates => {
+
+      this.reservedDates = dates;
+      // Parcourir tous les créneaux horaires
+      this.timeSlots.forEach(slot => {
+        // Pour chaque créneau, vérifier s'il existe dans reservedDates
+        const isReserved = this.reservedDates.some(reservedDate => reservedDate.getTime() === slot.value.getTime());
+
+        // Si le créneau est réservé, marquer available à false
+        slot.available = !isReserved;
+        // Si réservé, désélectionner le créneau
+        if (isReserved) {
+          slot.available = false;
+        }
+      });
+    });
   }
 
   generateTimeSlots() {
@@ -88,58 +77,60 @@ export class ProductComponent implements OnInit {
     const timeSlots: TimeSlot[] = [];
 
     for (let hour = startHour; hour < endHour; hour++) {
+      // Création des créneaux de 00 et 30 minutes pour chaque heure
       timeSlots.push({
-        value: `${this.formatTime(hour)}:00`,
-        available: false
+        value: this.createDateWithTime(hour, 0),
+        available: true,
+        selected: false
       });
       timeSlots.push({
-        value: `${this.formatTime(hour)}:30`,
-        available: true
+        value: this.createDateWithTime(hour, 30),
+        available: true,
+        selected: false
       });
     }
     this.timeSlots = timeSlots;
   }
 
-  // Fonction utilitaire pour formater les heures avec des zéros (ex: 08:00)
-  formatTime(hour: number): string {
-    return hour < 10 ? '0' + hour : hour.toString();
+  // Créer une date avec une heure et des minutes spécifiques
+  createDateWithTime(hours: number, minutes: number): Date {
+    const date = new Date(this.date);
+    date.setHours(hours, minutes, 0, 0);
+    return date;
   }
+
   reservTimeSlot(timeSlot: TimeSlot) {
-    const slot = this.timeSlots.find((slot: TimeSlot) => slot.value === timeSlot.value);
+    const slot = this.timeSlots.find(slot => slot.value.getTime() === timeSlot.value.getTime());
     if (slot) {
+      // Désélectionner les autres créneaux
+      this.timeSlots.forEach(s => (s.selected = false));
+
       this.selectedSlot = slot;
+      this.selectedSlot.selected = true;
 
-      const [hours, minutes] = this.selectedSlot.value.split(':').map(Number);
-
-      // Créer une nouvelle date avec les heures et minutes ajustées
-      const newDate = new Date(this.date);
-      newDate.setHours(hours);
-      newDate.setMinutes(minutes);
-      newDate.setSeconds(0);
-
-      // Mettre à jour this.date avec la nouvelle date
-      this.date = newDate;
+      // Mettre à jour la date avec l'heure du créneau
+      this.date = new Date(this.selectedSlot.value);
       this.reservationService.addReservation(this.date);
     }
   }
+
   cancelTimeSlot(timeSlot: TimeSlot) {
-    const slot = this.timeSlots.find((slot: TimeSlot) => slot.value === timeSlot.value);
+    const slot = this.timeSlots.find(slot => slot.value.getTime() === timeSlot.value.getTime());
 
     if (slot) {
-      this.selectedSlot = { value: "", available: true };
+      this.selectedSlot = { value: new Date(), available: true, selected: false };
 
-      // Extraire l'heure et les minutes du créneau annulé
-      const [hours, minutes] = slot.value.split(':').map(Number);
-
-      // Créer une nouvelle date à partir de this.date (date sélectionnée) en ajustant les heures et minutes
-      const newDate = new Date(this.date);
-      newDate.setHours(hours);
-      newDate.setMinutes(minutes);
-      newDate.setSeconds(0);
+      // Désélectionner le créneau annulé
+      slot.selected = false;
 
       // Informer le service que la date est annulée
-      this.reservationService.cancelReservation(newDate);
-      console.log(newDate);
+      this.reservationService.cancelReservation(slot.value);
     }
   }
+
+  reservDay() {
+    this.disabledDates = [...this.disabledDates, this.date];
+  }
+
+  daySelected() {}
 }
